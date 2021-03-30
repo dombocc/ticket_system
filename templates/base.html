@@ -14,19 +14,24 @@
         <nav class="navbar navbar-dark bg-dark">
             <div class="container-fluid">
               <a class="navbar-brand">Ticket System</a>
-              <form class="d-flex">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-              </form>
+                <button class="btn btn-outline-success" type="submit">Login</button>
+              
             </div>
           </nav>
         {% endblock %}
     </header>
-    <div id="content">{% block content %}{% endblock %}</div>
-    <div id="footer">
-        {% block footer %}
-        &copy; Copyright 2021 by <a href="http://domain.invalid/">Dominic Boccaleri</a>.
+    <div id="content" class="container-fluid">
+        {% block content %}
         {% endblock %}
+    </div>
+    <div id="footer" class="footer mt-auto py-3">
+        <div class="container">
+            <span class="text-muted">
+            {% block footer %}
+            &copy; Copyright 2021 by <a href="http://domain.invalid/">you</a>.
+            {% endblock %}
+            </span>
+        </div>
     </div>
 </body>
 </html>
