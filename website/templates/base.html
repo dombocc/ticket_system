@@ -13,8 +13,11 @@
         {% block header %}
         <nav class="navbar navbar-dark bg-dark">
             <div class="container-fluid">
-              <a class="navbar-brand">Ticket System</a>
-                <a class="btn btn-outline-success" type="submit" href="/login">Login</a>
+                <a class="navbar-brand">Ticket System</a>
+                <div class="d-grid gap-2 d-md-block">
+                    <a class="btn btn-outline-success" type="submit" href="/home">Home</a>
+                    <a class="btn btn-outline-success" type="submit" href="/logout">Logout</a>
+                </div>
             </div>
         </nav>
         {% endblock %}

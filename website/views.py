@@ -4,7 +4,10 @@ from . import db
 
 views = Blueprint('views', __name__)
 
+@views.route('/')
+def front_page():
+    return render_template('front_page.html')
+
 @views.route('/home')
 def home():
     return render_template('home.html')
-

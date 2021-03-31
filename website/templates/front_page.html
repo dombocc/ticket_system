@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Ticket System{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        .important { color: #336699; }
+    </style>
+    <link rel="shortcut icon" href="">
+{% endblock %}
+{% block header %}
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand">Ticket System</a>
+            <a class="btn btn-outline-success" type="submit" href="/login">Login</a>
+        </div>
+    </nav>
+{% endblock %}
+{% block content %}
+    <div class="p-3 bg-light">
+        <h1 class="display-8">Help Desk Ticketing</h1>
+        <p class="lead"> This is a simple hero unit.</p>
+        <hr class="my4">
+        <p>It uses utility classes</p>
+        <a class="btn btn-primary btn-lg" href="#" role="button">Learn More</a>
+    </div>
+{% endblock %}
