@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Submit New Ticket{% endblock %}
+{% block head %}
+    {{ super() }}
+    <style type="text/css">
+        .important { color: #336699; }
+    </style>
+    <link rel="shortcut icon" href="">
+{% endblock %}
+
+{% block content %}
+<br></br>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1>Submit a New Ticket</h1>
+                <form method="POST" action="new_ticket">
+                    <div class="mb-3">
+                        <h5 for="ticket_name" class="form-label">Ticket Title</h5>
+                        <input type="ticket_name" name="ticket_name" class="form-control" id="ticket_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <h5 for="ticket_desc" class="form-label">Request Overview</h5>
+                        <textarea class="form-control" id="ticket_desc" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="requirements" class="form-label">Special Requirements</label>
+                        <textarea class="form-control" id="requirements" rows="2"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="mr-sm-2" for="req_priority">Requested Priority</label>
+                            <select class="custom-select mr-sm-2" id="req_priority" required>
+                                <option value="1">Choose...</option>
+                                <option value="1">Low</option>
+                                <option value="2">Medium</option>
+                                <option value="3">High</option>
+                                <option value="4">Critical</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
