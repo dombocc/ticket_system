@@ -10,4 +10,4 @@ def front_page():
 
 @views.route('/home')
 def home():
-    return render_template('home.html')
+    return render_template('dashboard/index.html')
