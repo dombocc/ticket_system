@@ -23,6 +23,7 @@ class Ticket(db.Model):
     created_date = db.Column(db.DateTime(timezone=True), default=func.now())
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id')) # user owns a ticket
     
+    
 class Ticket_Status(db.Model): 
     __tablename__ = 'ticket_status'
     id = db.Column(db.Integer, primary_key=True)

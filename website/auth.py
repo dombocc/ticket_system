@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, session
 from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
@@ -8,6 +8,10 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
+    #if user currently logged in, go to dashboard
+    if current_user.get_id():
+        return redirect(url_for('views.dashboard'))
+
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -63,13 +67,15 @@ def sign_up():
     return render_template("sign_up.html", user=current_user)
 
 @auth.route('/new_ticket', methods=['GET', 'POST'])
+@login_required
 def new_ticket():
     if request.method == 'POST':
         ticket_name = request.form.get('ticket_name')
         ticket_desc = request.form.get('ticket_desc')
         requirements = request.form.get('requirements')
         req_priority = request.form.get('req_priority')
+        user_id = current_user.get_id()
 
-        return ticket_name
+        return ticket_name + ' ' + user_id
 
      
