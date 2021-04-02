@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for, session
-from .models import User
+from flask import Blueprint, render_template, request, flash, redirect, url_for
+from .models import User, Ticket, Ticket_Status, Priority
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
@@ -42,6 +42,7 @@ def sign_up():
     if request.method == 'POST':
         email = request.form.get('email')
         first_name = request.form.get('firstname')
+        last_name = request.form.get('lastname')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
 
@@ -57,12 +58,18 @@ def sign_up():
         elif len(password1) < 7:
             flash('Password must be at least 7 characters.', category='error')
         else:
-            new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method='sha256'))
+            new_user = User(email=email, first_name=first_name, last_name=last_name, password=generate_password_hash(password1, method='sha256'))
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
-            return redirect(url_for('views.dsahboard'))
+            if current_user.id == 1:
+                priorities = ['low','medium','high','critical']
+                for i,priority in enumerate(priorities):
+                    new_priority = Priority(id = i+1, priority_decoded=priority)
+                    db.session.add(new_priority)
+                db.session.commit()    
+            return redirect(url_for('views.dashboard'))
 
     return render_template("sign_up.html", user=current_user)
 
@@ -72,10 +79,18 @@ def new_ticket():
     if request.method == 'POST':
         ticket_name = request.form.get('ticket_name')
         ticket_desc = request.form.get('ticket_desc')
-        requirements = request.form.get('requirements')
+        spec_requirements = request.form.get('spec_requirements')
         req_priority = request.form.get('req_priority')
-        user_id = current_user.get_id()
+        user_id = current_user.id
+    
+        new_ticket = Ticket(title=ticket_name, overview=ticket_desc, spec_requirements=spec_requirements, req_priority=req_priority, owner_id=current_user.id)
 
-        return ticket_name + ' ' + user_id
+        
 
+        db.session.add(new_ticket)
+        db.session.commit()
+        flash('Request submitted!', category='success')
+
+        return str(new_ticket.title) + ' ' + str(new_ticket.overview) + ' ' + str(new_ticket.spec_requirements) + ' ' + str(new_ticket.req_priority) + ' ' + str(new_ticket.owner_id) + ' ' + str(user_id) 
+        
      

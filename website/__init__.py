@@ -1,7 +1,7 @@
 from flask import Flask, escape, request, render_template
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-from os import path
+from os import path, remove
 
 db = SQLAlchemy()
 DB_NAME = "database.db"
@@ -24,6 +24,7 @@ def create_app():
 
 
     create_database(app)
+
 
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
