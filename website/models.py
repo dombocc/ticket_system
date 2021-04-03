@@ -22,7 +22,8 @@ class Priority(db.Model):
 # Many to Many Ticket and Status
 ticket_ticket_status = db.Table('ticket_ticket_status', 
         db.Column('ticket_id', db.Integer, db.ForeignKey('ticket.id')),
-        db.Column('ticket_status_id', db.Integer, db.ForeignKey('ticket_status.id')))
+        db.Column('ticket_status_id', db.Integer, db.ForeignKey('ticket_status.id')),
+        db.Column('time_stamp', db.DateTime(timezone=True), default=func.now()))
 
 class Ticket(db.Model):
     __tablename__ = 'ticket'

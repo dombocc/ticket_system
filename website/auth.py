@@ -68,6 +68,10 @@ def sign_up():
                 for i,priority in enumerate(priorities):
                     new_priority = Priority(id = i+1, priority_decoded=priority)
                     db.session.add(new_priority)
+                statuses = ['Request Submitted', 'Initial Review', 'Development 1', 'QA 1', 'Development 2', 'QA 2', 'Completed', 'Cancelled']
+                for i, status in enumerate(statuses):
+                    new_status = Ticket_Status(id=i+1, name=status)
+                    db.session.add(new_status)
                 db.session.commit()    
             return redirect(url_for('views.dashboard'))
 
@@ -82,15 +86,17 @@ def new_ticket():
         spec_requirements = request.form.get('spec_requirements')
         req_priority = request.form.get('req_priority')
         user_id = current_user.id
-    
-        new_ticket = Ticket(title=ticket_name, overview=ticket_desc, spec_requirements=spec_requirements, req_priority=req_priority, owner_id=current_user.id)
+
+        # status = Ticket_Status.query.filter_by(id=0).first()
+        
+        new_ticket = Ticket(title=ticket_name, overview=ticket_desc, spec_requirements=spec_requirements, req_priority=req_priority, owner_id=current_user.id )
 
         
 
-        db.session.add(new_ticket)
-        db.session.commit()
-        flash('Request submitted!', category='success')
+        # db.session.add(new_ticket)
+        # db.session.commit()
+        # flash('Request submitted!', category='success')
 
         return str(new_ticket.title) + ' ' + str(new_ticket.overview) + ' ' + str(new_ticket.spec_requirements) + ' ' + str(new_ticket.req_priority) + ' ' + str(new_ticket.owner_id) + ' ' + str(user_id) 
-        
+        # return str(status.id)
      
