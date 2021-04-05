@@ -34,6 +34,8 @@ class Ticket(db.Model):
     spec_requirements = db.Column(db.String(200))
     req_priority = db.Column(db.String(2), db.ForeignKey('priority.id'))
 
+    ticket_ticket_status = db.relationship('Ticket_Status', secondary=ticket_ticket_status, backref=db.backref('ticket_statuses', lazy=True))
+
     owner_id = db.Column(db.Integer, db.ForeignKey('user.id')) # user owns a ticket
     # owner = db.relationship('User', foreign_keys='Ticket.owner_id') #Dont need
     assigned_id = db.Column(db.Integer, db.ForeignKey('user.id')) # user assigned to ticket
@@ -43,7 +45,7 @@ class Ticket_Status(db.Model):
     __tablename__ = 'ticket_status'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150))
-    ticket_ticket_status = db.relationship('Ticket', secondary=ticket_ticket_status, backref=db.backref('statuses', lazy=True))
+    # ticket_ticket_status = db.relationship('Ticket', secondary=ticket_ticket_status, backref=db.backref('statuses', lazy=True))
 
 
 # def add_status():
