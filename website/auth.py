@@ -77,28 +77,4 @@ def sign_up():
 
     return render_template("sign_up.html", user=current_user)
 
-@auth.route('/new_ticket', methods=['GET', 'POST'])
-@login_required
-def new_ticket():
-    if request.method == 'POST':
-        ticket_name = request.form.get('ticket_name')
-        ticket_desc = request.form.get('ticket_desc')
-        spec_requirements = request.form.get('spec_requirements')
-        req_priority = request.form.get('req_priority')
 
-        status = Ticket_Status.query.filter_by(id='1').first()
-        
-        new_ticket = Ticket(title=ticket_name, overview=ticket_desc, spec_requirements=spec_requirements, req_priority=req_priority, owner_id=current_user.id )
-
-        new_ticket.ticket_ticket_status.append(status)
-
-        
-
-        db.session.add(new_ticket)
-        db.session.commit()
-        flash('Request submitted!', category='success')
-
-        # return str(new_ticket.title) + ' ' + str(new_ticket.overview) + ' ' + str(new_ticket.spec_requirements) + ' ' + str(new_ticket.req_priority) + ' ' + str(new_ticket.owner_id) + ' ' + str(user_id) + ' ' + str(status.id)
-        # return str(status)
-        return redirect(url_for('views.dashboard'))
-     
