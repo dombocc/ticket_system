@@ -18,13 +18,15 @@ class Priority(db.Model):
     __tablename__ = 'priority'
     id = db.Column(db.Integer, primary_key=True)
     priority_decoded = db.Column(db.String(30))
+    ticket_id = db.relationship('Ticket', backref='priority', lazy=True)
 
 
 # Many to Many Ticket and Status
 ticket_ticket_status = db.Table('ticket_ticket_status', 
         db.Column('ticket_id', db.Integer, db.ForeignKey('ticket.id')),
         db.Column('ticket_status_id', db.Integer, db.ForeignKey('ticket_status.id')),
-        db.Column('time_stamp', db.DateTime(timezone=True), default=func.now()))
+        db.Column('time_stamp', db.DateTime(timezone=True), default=func.now()),
+        db.PrimaryKeyConstraint('ticket_id','ticket_status_id'))
 
 class Ticket(db.Model):
     __tablename__ = 'ticket'
@@ -33,7 +35,8 @@ class Ticket(db.Model):
     created_date = db.Column(db.DateTime(timezone=True), default=func.now())
     overview = db.Column(db.String(200))
     spec_requirements = db.Column(db.String(200))
-    req_priority = db.Column(db.String(2), db.ForeignKey('priority.id'))
+
+    req_priority = db.Column(db.Integer, db.ForeignKey('priority.id'))
 
     ticket_statuses = db.relationship('Ticket_Status', secondary='ticket_ticket_status', lazy='dynamic', backref=db.backref('tickets', lazy='dynamic'))
 
@@ -46,5 +49,5 @@ class Ticket_Status(db.Model):
     __tablename__ = 'ticket_status'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150))
-    # ticket_ticket_status = db.relationship('Ticket', secondary=ticket_ticket_status, backref=db.backref('tickets', lazy='dynamic'))
+    ticket_ticket_status = db.relationship('Ticket', secondary='ticket_ticket_status', backref=db.backref('ticket_status', lazy='dynamic'))
 

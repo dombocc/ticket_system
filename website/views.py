@@ -57,16 +57,23 @@ def tickets():
     
     # tickets = Ticket.query.select_from(Ticket).join(ticket_ticket_status).join(Ticket_Status).first()
     
-    # tickets = Ticket.query.select_from(Ticket).join(Ticket_Status).first()
-    # tickets = db.session.query(Ticket).first()
+    # tickets = Ticket.query.select_from(Ticket).join(Priority, Ticket.req_priority == Priority.id).first()
+    # tickets = db.session.query(Ticket,Priority).filter_by(Ticket.req_priority == Priority.id).first()
 
-    tickets = Ticket.query.select_from(Ticket).first()
-    # tickets = tickets.ticket_statuses.all()
+    tickets = Ticket.query.join(Ticket_Status, Ticket.ticket_statuses).first()
+    # tickets = Ticket.query.join(ticket_ticket_status, Ticket.id == ticket_ticket_status.c.ticket_id).join(Ticket_Status, ticket_ticket_status.c.ticket_status_id == Ticket_Status.id).first()
 
     
     # return render_template('tickets.html')
-    return str(tickets.id) + ' ' + str(tickets.title) + ' ' + str(tickets.created_date) + ' ' + str(tickets.overview) + ' ' + str(tickets.spec_requirements) + ' '  + str(tickets.req_priority) + ' ' + str(tickets.ticket_statuses.all()) 
+    # return str(tickets.id) + ' ' + str(tickets.title) + ' ' + str(tickets.created_date) + ' ' + str(tickets.overview) + ' ' + str(tickets.spec_requirements) + ' '  + str(tickets.req_priority) + ' ' + str(tickets.ticket_statuses.all()) 
     # + ' ' + str(tickets.owner_id) 
-    # return str(tickets.id) + ' ' + str(tickets.title)
+
+    # GETS TICKET STATUSES
+    tickets = Ticket.query.join(Ticket_Status, Ticket.ticket_statuses).first()
+    return str(tickets.id) + ' ' + str(tickets.title) + ' ' + str(tickets.ticket_statuses.first().name) + ' ' + str(tickets.title)
+
+    # GIVES PRIORITY
+    # tickets = Ticket.query.join(Priority, Ticket.req_priority==Priority.id).first()
+    # return str(tickets.id) + ' ' + str(tickets.req_priority) + ' ' + str(tickets.priority.priority_decoded)
  
 
