@@ -217,16 +217,26 @@
                     <div class="row">
                         <li class="list-group-item">
                             <div class='row'>
-                                <div class='col-sm'>ID</div> 
-                                <div class='col-lg-4'>Title</div>
-                                <div class='col-sm'>Current Status</div>
-                                <div class='col-sm'>Owner</div>
-                                <div class='col-sm'>Assinged To</div>
-                                <div class='col-sm'>Edit</div>
+                                <div class='col-sm-1'>ID:</div> 
+                                <div class='col-lg-4'>{{ ticket.id }}</div>
+                                
+                            </div>
+                        </li><br/>
+                        <li class="list-group-item">
+                            <div class='row'>
+                                <div class='col-sm-1'>Title:</div> 
+                                <div class='col-lg-4'>{{ ticket.title }}</div>
                                 
                             </div>
                         </li>
-                        {% for ticket in tickets %}
+                        <li class="list-group-item">
+                            <div class='row'>
+                                <div class='col-sm-1'>Owner:</div> 
+                                <div class='col-lg-4'>{{ ticket.owner.first_name +' '+ ticket.owner.last_name }}</div>
+                                
+                            </div>
+                        </li>
+                        
                         <li class="list-group-item">
                             <div class='row'>
                                 <div class='col-sm'>{{ ticket.id }}</div> 
@@ -245,7 +255,7 @@
                                     </button> </div>
                             </div>
                         </li>
-                        {% endfor %}
+                        
 
 
                     </div>

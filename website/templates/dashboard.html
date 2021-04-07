@@ -110,7 +110,7 @@
                 <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Login Screens:</h6>
-                        <a class="collapse-item" href="dashboard/ogin.html">Login</a>
+                        <a class="collapse-item" href="dashboard/login.html">Login</a>
                         <a class="collapse-item" href="dashboard/register.html">Register</a>
                         <a class="collapse-item" href="dashboard/forgot-password.html">Forgot Password</a>
                         <div class="collapse-divider"></div>
@@ -331,7 +331,7 @@
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ current_user.first_name +' '+ current_user.last_name }}</span>
                                 <img class="img-profile rounded-circle"
                                     src="static/img/undraw_profile.svg">
                             </a>
