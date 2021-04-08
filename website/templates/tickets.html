@@ -229,20 +229,20 @@
                         {% for ticket in tickets %}
                         <li class="list-group-item">
                             <div class='row'>
-                                <div class='col-sm'>{{ ticket.id }}</div> 
-                                <div class='col-lg-4'>{{ ticket.title }}</div> 
+                                <a class='col-sm' href='/ticket-{{ ticket.id }}'>{{ ticket.id }}</a> 
+                                <a class='col-lg-4' href='/ticket-{{ ticket.id }}'>{{ ticket.title }}</a> 
                                 <div class='col-sm'>{{ ticket.ticket_statuses.all()[-1].name }}</div> 
-                                <div class='col-sm'>{{ ticket.owner.first_name +' '+ ticket.owner.last_name}}</div>
-                                {% if ticket.assigned != None %}
-                                    <div class='col-sm'>{{ ticket.assigned.first_name +' '+ ticket.assigned.last_name}}</div>
+                                <div class='col-sm'>{{ ticket.owner_user.first_name +' '+ ticket.owner_user.last_name}}</div>
+                                {% if ticket.assigned_user != None %}
+                                    <div class='col-sm'>{{ ticket.assigned_user.first_name +' '+ ticket.assigned_user.last_name}}</div>
                                     {% else %}
-                                    <div class='col-sm'>{{ ticket.assigned }}</div>
+                                    <div class='col-sm'>{{ ticket.assigned_user }}</div>
                                 {% endif %}
 
                                 <div class='col-sm'>
-                                    <button type="button" class="btn btn-info" value='{{ ticket.id }}'>
+                                    <a type="submit" class="btn btn-info" href='/ticket-{{ ticket.id }}'>
                                         <span aria-hidden="true">Edit</span>
-                                    </button> </div>
+                                    </a> </div>
                             </div>
                         </li>
                         {% endfor %}

@@ -10,15 +10,16 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
     last_name = db.Column(db.String(150))
-    owned_tickets = db.relationship('Ticket', backref=db.backref('owner', lazy=True), foreign_keys='Ticket.owner_id')
-    assigned_tickets = db.relationship('Ticket', backref=db.backref('assigned', lazy=True), foreign_keys='Ticket.assigned_id')
+    owned_tickets = db.relationship('Ticket', backref=db.backref('owner_user', lazy=True), foreign_keys='Ticket.owner_id')
+    assigned_tickets = db.relationship('Ticket', backref=db.backref('assigned_user', lazy=True), foreign_keys='Ticket.assigned_id')
     
 
 class Priority(db.Model):
     __tablename__ = 'priority'
     id = db.Column(db.Integer, primary_key=True)
     priority_decoded = db.Column(db.String(30))
-    ticket_id = db.relationship('Ticket', backref='priority', lazy=True)
+    requested_pri = db.relationship('Ticket', backref=db.backref('requested_pri', lazy=True), foreign_keys='Ticket.requested_priority')
+    assigned_pri = db.relationship('Ticket', backref=db.backref('assigned_pri', lazy=True), foreign_keys='Ticket.assigned_priority')
 
 
 # Many to Many Ticket and Status
@@ -36,7 +37,8 @@ class Ticket(db.Model):
     overview = db.Column(db.String(200))
     spec_requirements = db.Column(db.String(200))
 
-    req_priority = db.Column(db.Integer, db.ForeignKey('priority.id'))
+    requested_priority = db.Column(db.Integer, db.ForeignKey('priority.id'))
+    assigned_priority = db.Column(db.Integer, db.ForeignKey('priority.id'))
 
     ticket_statuses = db.relationship('Ticket_Status', secondary='ticket_ticket_status', lazy='dynamic', backref=db.backref('tickets', lazy='dynamic'))
 
@@ -44,6 +46,7 @@ class Ticket(db.Model):
     # owner = db.relationship('User', foreign_keys='Ticket.owner_id') #Dont need
     assigned_id = db.Column(db.Integer, db.ForeignKey('user.id')) # user assigned to ticket
     # assigned = db.relationship('User', foreign_keys='Ticket.assigned_id') #Dont need
+    
     
 class Ticket_Status(db.Model): 
     __tablename__ = 'ticket_status'
