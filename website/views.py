@@ -30,12 +30,12 @@ def new_ticket():
     if request.method == 'POST':
         ticket_name = request.form.get('ticket_name')
         ticket_desc = request.form.get('ticket_desc')
-        spec_requirements = request.form.get('spec_requirements')
+        special_requirements = request.form.get('special_requirements')
         requested_priority = request.form.get('req_priority')
 
         status = Ticket_Status.query.filter_by(id='1').first()
         
-        new_ticket = Ticket(title=ticket_name, overview=ticket_desc, spec_requirements=spec_requirements, requested_priority=requested_priority, owner_id=current_user.id )
+        new_ticket = Ticket(title=ticket_name, overview=ticket_desc, special_requirements=special_requirements, requested_priority=requested_priority, owner_id=current_user.id )
 
         new_ticket.ticket_statuses.append(status)
 
@@ -90,9 +90,17 @@ def ticket_number(ticket_id):
 
     ticket_status = []
     for i in range(len(statuses)):
-        ticket_status.append([   status_dict[statuses[i][1]]       , statuses[i][2]])
+        ticket_status.append([  status_dict[statuses[i][1]]  , statuses[i][2]])
     
-    return render_template('single_ticket_info.html', ticket=ticket, ticket_status=ticket_status[::-1], count_status=len(statuses))
+    developers = User.query.filter_by(user_type=1).order_by(User.id).all()
+
+    #Get list of statuses for updates
+    ticket_statuses = Ticket_Status.query.order_by(Ticket_Status.id).all()
+    
+
+    # return str(developers) + ' ' + str(ticket.assigned_user.id)
+    
+    return render_template('single_ticket_info.html', ticket=ticket, ticket_status=ticket_status[::-1], count_status=len(statuses), developers=developers, developer_length = len(developers), ticket_statuses=ticket_statuses)
     
 
 
@@ -103,11 +111,21 @@ def ticket_number(ticket_id):
 def update_ticket():
     if request.method == 'POST':
         ticket_id = request.form.get('ticket_id')
-        # ticket_name = request.form.get('ticket_name')
-        # ticket_desc = request.form.get('ticket_desc')
-        # spec_requirements = request.form.get('spec_requirements')
+        ticket_title = request.form.get('ticket_title')
+        ticket_overview = request.form.get('ticket_overview')
+        special_requirements = request.form.get('special_requirements')
+        assigned_user_id = request.form.get('assigned_user')
         updated_status = request.form.get('update_status')
 
-        return str(ticket_id) + ' ' + str(updated_status)
+        ticket = Ticket.query.filter_by(id=ticket_id).first()
+
+        if ticket.title != ticket_title:
+            ticket.title = ticket_title
+            return str(ticket.title)
+
+
+
+        return str(ticket_id) + ' ' + str(ticket_title) + ' ' + str(ticket_overview) + ' ' + str(special_requirements) + ' ' + str(updated_status) + ' ' + str(assigned_user_id)
+        # return str(ticket.id) + ' ' + str(ticket.title) + ' ' + str(ticket.overview) + ' ' + str(ticket.special_requirements)
 
         

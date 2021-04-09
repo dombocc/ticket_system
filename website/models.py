@@ -10,9 +10,16 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
     last_name = db.Column(db.String(150))
+    user_type = db.Column(db.Integer, db.ForeignKey('user_type.id'))
     owned_tickets = db.relationship('Ticket', backref=db.backref('owner_user', lazy=True), foreign_keys='Ticket.owner_id')
     assigned_tickets = db.relationship('Ticket', backref=db.backref('assigned_user', lazy=True), foreign_keys='Ticket.assigned_id')
-    
+
+class User_Type(db.Model):
+    __tablename__ = 'user_type'
+    id = db.Column(db.Integer, primary_key=True)
+    user_type_decoded = db.Column(db.String(30))
+    user_type_fk = db.relationship('User', backref=db.backref('user_type_fk', lazy=True), foreign_keys='User.user_type')
+
 
 class Priority(db.Model):
     __tablename__ = 'priority'
@@ -35,7 +42,7 @@ class Ticket(db.Model):
     title = db.Column(db.String(150))
     created_date = db.Column(db.DateTime(timezone=True), default=func.now())
     overview = db.Column(db.String(200))
-    spec_requirements = db.Column(db.String(200))
+    special_requirements = db.Column(db.String(200))
 
     requested_priority = db.Column(db.Integer, db.ForeignKey('priority.id'))
     assigned_priority = db.Column(db.Integer, db.ForeignKey('priority.id'))

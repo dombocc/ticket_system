@@ -220,7 +220,7 @@
                         <li class="list-group-item">
                             <div class='row'>
                                 <div class='col-sm-1'>ID:</div> 
-                                <div class='col-lg-2'>
+                                <div class='col-sm-1'>
                                     <input readonly class='form-control' type="ticket_id" name="ticket_id" id="ticket_id" value='{{ ticket.id }}'></input>
                                 </div>
                             </div>
@@ -228,29 +228,49 @@
                         <li class="list-group-item">
                             <div class='row'>
                                 <div class='col-sm-1'>Title:</div> 
-                                <div class='col-lg-4'>{{ ticket.title }}</div>
+                                <div class='col-sm-5'>
+                                    <input class='form-control' type="ticket_title" name="ticket_title" id="ticket_title" value={{ ticket.title }}></input>
+                                </div>
                             </div>
                         </li>
                         <li class="list-group-item">
                             <div class='row'>
                                 <div class='col-sm-1'>Overview:</div> 
-                                <div class='col-lg-4'>{{ ticket.overview }}</div>
+                                <div class='col-lg-10'>
+                                    <textarea  class='form-control' type="ticket_overview" name="ticket_overview" id="ticket_overview" rows='2'>{{ ticket.overview }}</textarea>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class='row'>
+                                <div class='col-sm-1'>Special Requirements:</div> 
+                                <div class='col-lg-10'>
+                                    <textarea  class='form-control' type="special_requirements" name="special_requirements" id="special_requirements" rows='2'>{{ ticket.special_requirements }}</textarea>
+                                </div>
                             </div>
                         </li>
                         <li class="list-group-item">
                             <div class='row'>
                                 <div class='col-sm-1'>Owner:</div> 
-                                <div class='col-lg-4'>{{ ticket.owner_user.first_name +' '+ ticket.owner_user.last_name }}</div>
+                                <div class='col-sm-2'>
+                                    <input readonly class='form-control' type="owner_name" name="owner_name" id="owner_name" value="{{ ticket.owner_user.first_name }} {{ ticket.owner_user.last_name }}"></input>
+                                </div>
                             </div>
                         </li>
                         <li class="list-group-item">
                             <div class='row'>
-                                <div class='col-sm-1'>Assigned:</div> 
-                                {% if ticket.assigned_user != None %}
-                                    <div class='col-sm'>{{ ticket.assigned_user.first_name +' '+ ticket.assigned_user.last_name}}</div>
-                                    {% else %}
-                                    <div class='col-sm'>{{ ticket.assigned_user }}</div>
-                                {% endif %}
+                                <div class='col-sm-1'>Assigned Developer:</div> 
+                                <div class='col-sm-2'>
+                                    <select class="custom-select mr-sm-1" name='assigned_user' id="assigned_user">
+                                        {% if ticket.assigned_user != None %}
+                                            <option value="{{ ticket.assigned_user.id }}">{{ ticket.assigned_user.first_name }} {{ ticket.assigned_user.last_name }}</option>
+                                            {% else %}
+                                            <option value="">Please Assgin a Developer</option>
+                                        {% endif %}
+                                        {% for developer in developers %}
+                                            <option value="{{ developer.id }}">{{ developer.first_name }} {{ developer.last_name }}</option>
+                                        {% endfor %}
+                                    </select>
                             </div>
                         </li>
                         <li class="list-group-item">
@@ -262,15 +282,10 @@
                                 <div class='col-sm-1'>New Status:</div> 
                                 <div class='col-sm-2'>
                                     <select class="custom-select mr-sm-1" name='update_status' id="update_status">
-                                        <option value="0">Update Status...</option>
-                                        <option value="1">Request Submitted</option>
-                                        <option value="2">Initial Review</option>
-                                        <option value="3">Development 1</option>
-                                        <option value="4">QA 1</option>
-                                        <option value="5">Development 2</option>
-                                        <option value="6">QA 2</option>
-                                        <option value="7">Completed</option>
-                                        <option value="8">Canceled</option>
+                                        <option value="">Update Status...</option>
+                                        {% for ticket_status in ticket_statuses %}
+                                            <option value="{{ ticket_status.id }}">{{ ticket_status.name }}</option>
+                                        {% endfor %}
                                     </select>
                                 </div>
                             </div>
@@ -289,25 +304,6 @@
                         </li>
                         {% endif %}
                         
-                        <li class="list-group-item">
-                            <div class='row'>
-                                <div class='col-sm'>{{ ticket.id }}</div> 
-                                <div class='col-lg-4'>{{ ticket.title }}</div> 
-                                <div class='col-sm'>{{ ticket.ticket_statuses.all()[-1].name }}</div> 
-                                <div class='col-sm'>{{ ticket.owner_user.first_name +' '+ ticket.owner_user.last_name}}</div>
-                                {% if ticket.assigned_user != None %}
-                                    <div class='col-sm'>{{ ticket.assigned_user.first_name +' '+ ticket.assigned_user.last_name}}</div>
-                                    {% else %}
-                                    <div class='col-sm'>{{ ticket.assigned_user }}</div>
-                                {% endif %}
-
-                                <div class='col-sm'>
-                                    <button type="button" class="btn btn-info" value='{{ ticket.id }}'>
-                                        <span aria-hidden="true">Edit</span>
-                                    </button> 
-                                </div>
-                            </div>
-                        </li>
                         
                         <li class="list-group-item">
                             <div class='row'>

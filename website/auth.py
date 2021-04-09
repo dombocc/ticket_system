@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from .models import User, Ticket, Ticket_Status, Priority
+from .models import User, Ticket, Ticket_Status, Priority, User_Type
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
@@ -63,6 +63,8 @@ def sign_up():
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
+
+            # Initialize Data for database
             if current_user.id == 1:
                 priorities = ['low','medium','high','critical']
                 for i,priority in enumerate(priorities):
@@ -73,6 +75,12 @@ def sign_up():
                     new_status = Ticket_Status(id=i+1, name=status)
                     db.session.add(new_status)
                 db.session.commit()    
+                user_types = ['Developer', 'Read_Only']
+                for i, types in enumerate(user_types):
+                    new_user_type = User_Type(id=i+1, user_type_decoded=types)
+                    db.session.add(new_user_type)
+                db.session.commit()  
+            #Redirect to Dashboard    
             return redirect(url_for('views.dashboard'))
 
     return render_template("sign_up.html", user=current_user)
