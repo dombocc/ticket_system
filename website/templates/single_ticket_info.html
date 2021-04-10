@@ -229,7 +229,7 @@
                             <div class='row'>
                                 <div class='col-sm-1'>Title:</div> 
                                 <div class='col-sm-5'>
-                                    <input class='form-control' type="ticket_title" name="ticket_title" id="ticket_title" value={{ ticket.title }}></input>
+                                    <input class='form-control' type="ticket_title" name="ticket_title" id="ticket_title" value="{{ ticket.title }}"></input>
                                 </div>
                             </div>
                         </li>
@@ -265,7 +265,7 @@
                                         {% if ticket.assigned_user != None %}
                                             <option value="{{ ticket.assigned_user.id }}">{{ ticket.assigned_user.first_name }} {{ ticket.assigned_user.last_name }}</option>
                                             {% else %}
-                                            <option value="">Please Assgin a Developer</option>
+                                            <option value="">Please Assign a Developer</option>
                                         {% endif %}
                                         {% for developer in developers %}
                                             <option value="{{ developer.id }}">{{ developer.first_name }} {{ developer.last_name }}</option>
@@ -282,7 +282,7 @@
                                 <div class='col-sm-1'>New Status:</div> 
                                 <div class='col-sm-2'>
                                     <select class="custom-select mr-sm-1" name='update_status' id="update_status">
-                                        <option value="">Update Status...</option>
+                                        <option value="{{ current_ticket_status }}">Update Status...</option>
                                         {% for ticket_status in ticket_statuses %}
                                             <option value="{{ ticket_status.id }}">{{ ticket_status.name }}</option>
                                         {% endfor %}
@@ -303,7 +303,28 @@
                             {% endfor %}
                         </li>
                         {% endif %}
-                        
+                        <li class="list-group-item">
+                            <div class='row'>
+                                <div class='col-sm-1'>Requested Priority:</div> 
+                                <div class='col-sm-1'>
+                                    <input readonly class='form-control' type="requested_priority" name="requested_priority" id="requested_priority" value='{{ ticket.requested_pri.priority_decoded }}'></input>
+                                </div>
+                            
+                                <div class='col-sm-2'>Assigned Priority:</div> 
+                                <div class='col-sm-3'>
+                                    <select class="custom-select mr-sm-1" name='assigned_priority' id="assigned_priority">
+                                        {% if ticket.assigned_pri != None %}
+                                            <option value="{{ ticket.assigned_pri.id }}">{{ ticket.assigned_pri.priority_decoded }}</option>
+                                            {% else %}
+                                            <option value="">Assign a Priority</option>
+                                        {% endif %}
+                                        {% for priority in priorities %}
+                                            <option value="{{ priority.id }}">{{ priority.priority_decoded }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                        </li>
                         
                         <li class="list-group-item">
                             <div class='row'>
