@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for
 from flask_login import login_required, current_user
 from . import db
-from .models import User, Ticket, Ticket_Status, Priority, ticket_ticket_status
+from .models import User, Ticket, Ticket_Status, Priority, ticket_ticket_status, User_Type
 from sqlalchemy import text
 
 views = Blueprint('views', __name__)
@@ -25,7 +25,7 @@ def dashboard():
 
 @views.route('/new_ticket', methods=['GET', 'POST'])
 @login_required
-def new_ticket():
+def create_new_ticket():
     # If 'POST' request
     if request.method == 'POST':
         ticket_name = request.form.get('ticket_name')
@@ -55,14 +55,16 @@ def new_ticket():
 
 @views.route('/tickets', methods=['GET','POST'])
 @login_required
-def tickets():
+def view_all_tickets():
     
-
-    tickets = Ticket.query.all()
-
-    
-    return render_template('tickets.html', tickets=tickets)
-    
+    #Split tickets page on developers/users
+    cur_user = User.query.filter_by(id=current_user.id).first()
+    if cur_user.user_type == 1:
+        tickets = Ticket.query.all()
+        return render_template('tickets.html', tickets=tickets)
+    else:
+        tickets = Ticket.query.filter_by(owner_id=cur_user.id).all()
+        return render_template('tickets.html', tickets=tickets)
 
     
     # GETS TICKET STATUSES
@@ -76,7 +78,7 @@ def tickets():
 
 @views.route('/ticket-<ticket_id>', methods=['GET','POST'])
 @login_required
-def ticket_number(ticket_id):
+def view_single_ticket(ticket_id):
 
 
     ticket = Ticket.query.filter_by(id=ticket_id).first()
@@ -113,58 +115,90 @@ def ticket_number(ticket_id):
     
 
 
-
-
+# Update Ticket Info Through single_ticket_info.html
 @views.route('/update_ticket', methods=['POST'])
 @login_required
 def update_ticket():
     if request.method == 'POST':
-        ticket_id = int(request.form.get('ticket_id'))
-        ticket_title = request.form.get('ticket_title')
-        ticket_overview = request.form.get('ticket_overview')
-        special_requirements = request.form.get('special_requirements')
-        assigned_user_id = int(request.form.get('assigned_user'))
-        updated_status = int(request.form.get('update_status'))
-        assigned_priority = int(request.form.get('assigned_priority'))
 
+        ticket_id = int(request.form.get('ticket_id'))
         # Get current ticket entitiy
         ticket = Ticket.query.filter_by(id=ticket_id).first()
 
+                
+        ticket_title = request.form.get('ticket_title')
         # update ticket title
         if ticket.title != ticket_title:
             ticket.title = ticket_title
-            return 'title ' + str(ticket_title)
+            # return 'title ' + str(ticket_title)
         
+        ticket_overview = request.form.get('ticket_overview')
         # update ticket overview
         if ticket.overview != ticket_overview:
             ticket.overview = ticket_overview
-            return 'overview ' + str(ticket_overview)
+            # return 'overview ' + str(ticket_overview)
         
+        special_requirements = request.form.get('special_requirements')
         # update ticket special_requirements
         if ticket.special_requirements != special_requirements:
             ticket.special_requirements = special_requirements
-            return 'spec_req ' + str(special_requirements)
+            # return 'spec_req ' + str(special_requirements)
         
-        # update ticket assigned_user
-        if ticket.assigned_user.id != assigned_user_id:
-            ticket.assigned_user.id = assigned_user_id
-            return 'assigned ' + str(assigned_user_id)+ str(ticket.assigned_user.id)
-
-        # assign a priority
-        ###########
-        
-        
+        updated_status = int(request.form.get('update_status'))
         # update ticket status
         if ticket.ticket_statuses.all()[-1].id != updated_status:
             new_status = Ticket_Status.query.filter_by(id=updated_status).first()
             ticket.ticket_statuses.append(new_status)
-            return 'status ' + str(new_status.id) + str(ticket.ticket_statuses.all()[-1].id)
+            # return 'status ' + str(new_status.id) + str(ticket.ticket_statuses.all()[-1].id)
+        
+        
+        if request.form.get('assigned_user') != '':
+            assigned_user_id = int(request.form.get('assigned_user'))
+            # update ticket assigned_user
+            # if no assigned user
+            if not ticket.assigned_user:
+                ticket.assigned_id = assigned_user_id
+                # return 'new assigned_dev ' + str(assigned_user_id)+ str(ticket.assigned_id)
+            else:
+            # if there is an assigned user
+                if ticket.assigned_user.id != assigned_user_id:
+                    ticket.assigned_user.id = assigned_user_id
+                    # return 'assigned_dev ' + str(assigned_user_id)+ str(ticket.assigned_user.id)
+
+
+        if request.form.get('assigned_priority') != '':
+            assigned_priority = int(request.form.get('assigned_priority'))
+            # assign a priority
+            if not ticket.assigned_pri:
+                ticket.assigned_priority = assigned_priority
+                # return 'new assigned_pri ' + str(assigned_priority)+ str(ticket.assigned_priority)
+            else:
+                if ticket.assigned_pri.id != assigned_priority:
+                    ticket.assigned_pri.id = assigned_priority
+                    # return 'assigned_pri ' + str(assigned_priority)+ str(ticket.assigned_pri.id)
+        
+        
 
         # Commit Updates
-        # db.session.commit() 
+        db.session.commit() 
 
         # return str(ticket_id) + ' ' + str(ticket_title) + ' ' + str(ticket_overview) + ' ' + str(special_requirements) + ' ' + str(updated_status) + ' ' + str(assigned_user_id)
-        return str(ticket.id) + ' ' + str(ticket.title) + ' ' + str(ticket.overview) + ' ' + str(ticket.special_requirements)
-        # return redirect(url_for('views.tickets'))
+        # return str(ticket.id) + ' ' + str(ticket.title) + ' ' + str(ticket.overview) + ' ' + str(ticket.special_requirements) + ' ' + str(ticket.requested_pri.id)
+        return redirect(url_for('views.tickets'))
 
-        
+
+# View User Info Through users.html
+@views.route('/admin-users', methods=['GET','POST'])
+@login_required
+def view_all_users():
+    users = User.query.all()
+    return render_template('users.html', users = users)
+
+
+# View Single User Info Through single_user_info.html
+@views.route('/admin-user-<user_id>', methods=['GET','POST'])
+@login_required
+def view_single_user(user_id):
+    user = User.query.filter_by(id=user_id).first()
+    user_types = User_Type.query.all()
+    return render_template('single_user_info.html', user = user, user_types = user_types)
