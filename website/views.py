@@ -144,6 +144,7 @@ def update_ticket():
             ticket.special_requirements = special_requirements
             # return 'spec_req ' + str(special_requirements)
         
+
         updated_status = int(request.form.get('update_status'))
         # update ticket status
         if ticket.ticket_statuses.all()[-1].id != updated_status:
