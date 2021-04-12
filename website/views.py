@@ -206,6 +206,9 @@ def view_all_users():
 @login_required
 def view_single_user(user_id):
     user = User.query.filter_by(id=user_id).first()
+    if user == None:
+        flash('User Doesn\'t Exist', category='error')
+        return redirect(url_for('views.dashboard'))
     user_types = User_Type.query.all()
     return render_template('single_user_info.html', user = user, user_types = user_types)
 
