@@ -55,7 +55,7 @@ def sign_up():
             flash('First name must be greater than 1 character.', category='error')
         elif password1 != password2:
             flash('Passwords don\'t match.', category='error')
-        elif len(password1) < 7:
+        elif validate_password_requirements(password1):
             flash('Password must be at least 7 characters.', category='error')
         else:
             new_user = User(email=email, first_name=first_name, last_name=last_name, password=generate_password_hash(password1, method='sha256'), user_type = 2)
@@ -86,3 +86,55 @@ def sign_up():
     return render_template("sign_up.html", user=current_user)
 
 
+# Update User Info Through single_user_info.html
+@auth.route('/admin-update_user', methods=['POST'])
+@login_required
+def update_user():
+    if request.method == 'POST':
+
+        user_id = int(request.form.get('user_id'))
+        # Get user entitiy
+        user = User.query.filter_by(id=user_id).first()
+
+                
+        first_name = request.form.get('first_name')
+        # update user first_name
+        if user.first_name != first_name:
+            user.first_name = first_name
+        
+        last_name = request.form.get('last_name')
+        # update user last_name
+        if user.last_name != last_name:
+            user.last_name = last_name
+
+
+        password1 = request.form.get('password1')
+        password2 = request.form.get('password2')
+        # update user password
+        if password1 == '' or check_password_hash(user.password, password1):
+            pass
+        elif validate_password_requirements(password1, password2):
+            return redirect(url_for('views.view_single_user', user_id = user_id))
+        else:
+            user.password = generate_password_hash(password1, method='sha256')
+        
+        user_type = int(request.form.get('user_type'))
+        # update user user_type
+        if user.user_type != user_type:
+            user.user_type = user_type
+                
+        # Commit Updates
+        db.session.commit() 
+
+        return redirect(url_for('views.view_all_users'))
+
+def validate_password_requirements(pass1,pass2):
+    if pass1 != '':
+        if pass1 != pass2:
+            flash('Passwords don\'t match.', category='error')
+            return True
+        elif len(pass1) < 7:
+            flash('Password must be at least 7 characters.', category='error')
+            return True
+        else:
+            return False

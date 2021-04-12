@@ -184,15 +184,21 @@ def update_ticket():
 
         # return str(ticket_id) + ' ' + str(ticket_title) + ' ' + str(ticket_overview) + ' ' + str(special_requirements) + ' ' + str(updated_status) + ' ' + str(assigned_user_id)
         # return str(ticket.id) + ' ' + str(ticket.title) + ' ' + str(ticket.overview) + ' ' + str(ticket.special_requirements) + ' ' + str(ticket.requested_pri.id)
-        return redirect(url_for('views.tickets'))
+        return redirect(url_for('views.view_all_tickets'))
 
 
 # View User Info Through users.html
 @views.route('/admin-users', methods=['GET','POST'])
 @login_required
 def view_all_users():
-    users = User.query.all()
-    return render_template('users.html', users = users)
+
+    #Split users page on admin/ everyone else
+    cur_user = User.query.filter_by(id=current_user.id).first()
+    if cur_user.user_type_fk.id == 1:
+        users = User.query.all()
+        return render_template('users.html', users=users)
+    else:
+        return redirect(url_for('views.view_single_user', user_id = cur_user.id))
 
 
 # View Single User Info Through single_user_info.html
@@ -202,3 +208,6 @@ def view_single_user(user_id):
     user = User.query.filter_by(id=user_id).first()
     user_types = User_Type.query.all()
     return render_template('single_user_info.html', user = user, user_types = user_types)
+
+
+
