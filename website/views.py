@@ -59,7 +59,7 @@ def view_all_tickets():
     
     #Split tickets page on developers/users
     cur_user = User.query.filter_by(id=current_user.id).first()
-    if cur_user.user_type == 1:
+    if cur_user.user_type == 1: # or cur_user.admin == 1:
         tickets = Ticket.query.all()
         return render_template('tickets.html', tickets=tickets)
     else:
@@ -167,7 +167,7 @@ def update_ticket():
             else:
             # if there is an assigned user
                 if ticket.assigned_user.id != assigned_user_id:
-                    ticket.assigned_user.id = assigned_user_id
+                    ticket.assigned_id = assigned_user_id
                     # return 'assigned_dev ' + str(assigned_user_id)+ str(ticket.assigned_user.id)
 
 
@@ -179,7 +179,7 @@ def update_ticket():
                 # return 'new assigned_pri ' + str(assigned_priority)+ str(ticket.assigned_priority)
             else:
                 if ticket.assigned_pri.id != assigned_priority:
-                    ticket.assigned_pri.id = assigned_priority
+                    ticket.assigned_priority = assigned_priority
                     # return 'assigned_pri ' + str(assigned_priority)+ str(ticket.assigned_pri.id)
         
         
@@ -199,7 +199,7 @@ def view_all_users():
 
     #Split users page on admin/ everyone else
     cur_user = User.query.filter_by(id=current_user.id).first()
-    if cur_user.user_type_fk.id == 1:
+    if cur_user.user_type_fk.id == 1: # cur_user.admin == 1:
         users = User.query.all()
         return render_template('users.html', users=users)
     else:
@@ -214,8 +214,12 @@ def view_single_user(user_id):
     if user == None:
         flash('User Doesn\'t Exist', category='error')
         return redirect(url_for('views.dashboard'))
-    user_types = User_Type.query.all()
-    return render_template('single_user_info.html', user = user, user_types = user_types)
+    elif current_user.user_type_fk.id != 1 and current_user.id != user.id: # current_user.admin != 1 and current_user.id != user.id:
+        flash('You don\'t have access', category='error')
+        return redirect(url_for('views.dashboard'))
+    else:
+        user_types = User_Type.query.all()
+        return render_template('single_user_info.html', user = user, user_types = user_types)
 
 
 

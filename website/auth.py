@@ -56,7 +56,7 @@ def sign_up():
         elif validate_password_requirements(password1,password2):
             flash('Password must be at least 7 characters.', category='error')
         else:
-            new_user = User(email=email, first_name=first_name, last_name=last_name, password=generate_password_hash(password1, method='sha256'), user_type = 2)
+            new_user = User(email=email, first_name=first_name, last_name=last_name, password=generate_password_hash(password1, method='sha256'), user_type = 2) #, admin = 0)
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
@@ -88,9 +88,11 @@ def sign_up():
 @auth.route('/admin-update_user', methods=['POST'])
 @login_required
 def update_user():
+
+    user_id = int(request.form.get('user_id'))
+    # if current_user.admin == 1 or current_user.id == user_id:
     if request.method == 'POST':
 
-        user_id = int(request.form.get('user_id'))
         # Get user entitiy
         user = User.query.filter_by(id=user_id).first()
 
@@ -125,6 +127,9 @@ def update_user():
         db.session.commit() 
 
         return redirect(url_for('views.view_all_users'))
+        # else:
+        #   flash('You are not eligible to make these changes', category='error')
+        #   return redirect(url_for('views.view_all_users'))
 
 def validate_password_requirements(pass1,pass2):
     if pass1 != '':

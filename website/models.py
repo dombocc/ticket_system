@@ -11,6 +11,7 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     last_name = db.Column(db.String(150))
     user_type = db.Column(db.Integer, db.ForeignKey('user_type.id'))
+    # admin = db.Column(db.Integer)
     owned_tickets = db.relationship('Ticket', backref=db.backref('owner_user', lazy=True), foreign_keys='Ticket.owner_id')
     assigned_tickets = db.relationship('Ticket', backref=db.backref('assigned_user', lazy=True), foreign_keys='Ticket.assigned_id')
 
