@@ -148,7 +148,10 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
-                   
+                   <!-- Page Heading -->
+                   <div class="d-sm-flex align-items-left">
+                        <h1 class="h3 mb-0 text-gray-800">User - {{ user.first_name }} {{ user.last_name }}</h1>
+                    </div>
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -170,11 +173,6 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">User - {{ user.first_name }} {{ user.last_name }}</h1>
-                    </div>
 
                     {% if current_user.admin == 1 %}
                     <form method="POST" action="admin-update_user">

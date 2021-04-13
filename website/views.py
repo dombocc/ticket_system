@@ -56,15 +56,48 @@ def create_new_ticket():
 @views.route('/tickets', methods=['GET','POST'])
 @login_required
 def view_all_tickets():
+
+    if request.method == 'POST':
+        filter_ticket_id = request.form.getlist('filter_ticket_id')
+        filter_ticket_status = request.form.getlist('filter_ticket_status')
+        filter_ticket_owner = request.form.getlist('filter_ticket_owner')
+        filter_ticket_developer = request.form.getlist('filter_ticket_developer')
+        cur_user = User.query.filter_by(id=current_user.id).first()
+        all_ticket_statuses = Ticket_Status.query.all()
+        all_users = User.query.all()
+        output_tickets = []
+
+        if cur_user.user_type == 1 or cur_user.admin == 1:
+            all_tickets = Ticket.query.filter_by().all()
+
+            for ticket in all_tickets:
+                if ticket.id in filter_ticket_id:
+                    all_tickets.pop(ticket)
+            
+            # add filter capabilities
+            # for ticket in tickets:
+            #     if ticket.id == 1:
+            #         output.append(ticket)
+            return render_template('tickets.html', tickets=all_tickets, all_tickets = all_tickets, all_ticket_statuses=all_ticket_statuses, all_users=all_users)
+        else:
+            all_tickets = Ticket.query.filter_by(owner_id=cur_user.id).all()
+            return render_template('tickets.html', tickets=all_tickets ,all_tickets = all_tickets, all_ticket_statuses=all_ticket_statuses, all_users=all_users)
+        # return str(filter_ticket_id) + ' ' + str(filter_ticket_status) + ' ' + str(filter_ticket_owner) + ' ' + str(filter_ticket_developer)
+
     
     #Split tickets page on developers/users
-    cur_user = User.query.filter_by(id=current_user.id).first()
-    if cur_user.user_type == 1 or cur_user.admin == 1:
-        tickets = Ticket.query.all()
-        return render_template('tickets.html', tickets=tickets)
-    else:
-        tickets = Ticket.query.filter_by(owner_id=cur_user.id).all()
-        return render_template('tickets.html', tickets=tickets)
+    if request.method == 'GET':
+        cur_user = User.query.filter_by(id=current_user.id).first()
+        all_ticket_statuses = Ticket_Status.query.all()
+        all_users = User.query.all()
+        if cur_user.user_type == 1 or cur_user.admin == 1:
+            all_tickets = Ticket.query.all()
+            return render_template('tickets.html', tickets=all_tickets, all_tickets = all_tickets, all_ticket_statuses=all_ticket_statuses, all_users=all_users)
+        else:
+            all_tickets = Ticket.query.filter_by(owner_id=cur_user.id).all()
+            return render_template('tickets.html', tickets=all_tickets ,all_tickets = all_tickets, all_ticket_statuses=all_ticket_statuses, all_users=all_users)
+
+        
 
     
     # GETS TICKET STATUSES

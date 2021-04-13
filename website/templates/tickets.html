@@ -148,9 +148,15 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
-
+                    <div class='nav-item dropdown no-arrow'>
+                        <div class="d-sm-flex align-items-left">
+                            <h1 class="h3 mb-0 text-gray-800">Tickets</h1>
+                        </div>
+                    </div>
+                    
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
+                        
 
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
@@ -172,9 +178,54 @@
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Tickets</h1>
+                    <form method='POST' action='tickets'>
+                    <div class='row'>
+                        <div class='col-sm-1'>
+                        <div class='col-sm-1'>Ticket ID:</div> 
+                        <div class='col-sm'>
+                            <button type="submit" class="btn btn-info">
+                                <span aria-hidden="true">Filter</span>
+                            </button> 
+                        </div>
+                        </div>
+                            <div class='col-sm-1'>
+                                <select class="custom-select mr-sm-1" name='filter_ticket_id' id="filter_ticket_id" multiple>
+                                    <option value="" selected>all</option>
+                                    {% for ticket in all_tickets %} 
+                                        <option value="{{ ticket.id }}">{{ ticket.id }}</option>
+                                    {% endfor %}
+                                </select>
+                        </div>
+                        <div class='col-sm-1'>Current Status:</div> 
+                            <div class='col-sm-3'>
+                                <select class="custom-select mr-sm-1" name='filter_ticket_status' id="filter_ticket_status" multiple>
+                                    <option value="" selected>select all</option>
+                                    {% for status in all_ticket_statuses %} 
+                                        <option value="{{ status.id }}">{{ status.name }}</option>
+                                    {% endfor %}
+                                </select>
+                        </div>
+                        <div class='col-sm-1'>Owner:</div> 
+                            <div class='col-sm-2'>
+                                <select class="custom-select mr-sm-1" name='filter_ticket_owner' id="filter_ticket_owner" multiple>
+                                    <option value="" selected>select all</option>
+                                    {% for owner in all_users %} 
+                                        <option value="{{ owner.id }}">{{ owner.first_name }} {{ owner.last_name }}</option>
+                                    {% endfor %}
+                                </select>
+                        </div>
+                        <div class='col-sm-1'>Developer:</div> 
+                            <div class='col-sm-2'>
+                                <select class="custom-select mr-sm-1" name='filter_ticket_developer' id="filter_ticket_developer" multiple>
+                                    <option value="" selected>select all</option>
+                                    {% for developer in all_users %} 
+                                        <option value="{{ developer.id }}">{{ developer.first_name }} {{ developer.last_name }}</option>
+                                    {% endfor %}
+                                </select>
+                        </div>
+
                     </div>
+                    </form>
 
                     <!-- Content Row -->
                     <div class="row">

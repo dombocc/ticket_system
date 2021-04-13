@@ -148,6 +148,11 @@
                         <i class="fa fa-bars"></i>
                     </button>
 
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-left">
+                        <h1 class="h3 mb-0 text-gray-800">Ticket - {{ ticket.id }}</h1>
+                    </div>
+
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
@@ -171,10 +176,6 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Ticket - {{ ticket.id }}</h1>
-                    </div>
                     {% if current_user.user_type == 1 or current_user.admin == 1 %}
                     <form method="POST" action="update_ticket">
 
