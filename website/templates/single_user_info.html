@@ -176,7 +176,7 @@
                         <h1 class="h3 mb-0 text-gray-800">User - {{ user.first_name }} {{ user.last_name }}</h1>
                     </div>
 
-                    {% if current_user.user_type == 1 %}
+                    {% if current_user.admin == 1 %}
                     <form method="POST" action="admin-update_user">
 
                     <!-- Content Row -->
@@ -238,6 +238,19 @@
                                             <option value="{{ user_type.id }}">{{ user_type.user_type_decoded }}</option>
                                         {% endfor %}
                                     </select>
+                                </div>
+                                <div class='col-sm-1'>Admin Level:</div> 
+                                <div class='col-sm-2'>
+                                    <select class="custom-select mr-sm-1" name='admin_level' id="admin_level">
+                                        {% if user.admin == 1 %}
+                                            <option value="1">True</option>
+                                            <option value="0">False</option>
+                                        {% else %}
+                                            <option value="0">False</option>
+                                            <option value="1">True</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
                             </div>
                         </li>
                         
@@ -319,6 +332,13 @@
                                             <option value="">Please Assign a User Type</option>
                                         {% endif %}
                                     </select>
+                                </div>
+                                <div class='col-sm-1'>Admin Level:</div> 
+                                <div class='col-sm-2'>
+                                    <select class="custom-select mr-sm-1" name='admin_level' id="admin_level">
+                                        <option value="{{ user.admin }}">{{ user.admin == 1 }}</option>
+                                    </select>
+                                </div>
                             </div>
                         </li>
                         

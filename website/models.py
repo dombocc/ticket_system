@@ -11,7 +11,7 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     last_name = db.Column(db.String(150))
     user_type = db.Column(db.Integer, db.ForeignKey('user_type.id'))
-    # admin = db.Column(db.Integer)
+    admin = db.Column(db.Integer)
     owned_tickets = db.relationship('Ticket', backref=db.backref('owner_user', lazy=True), foreign_keys='Ticket.owner_id')
     assigned_tickets = db.relationship('Ticket', backref=db.backref('assigned_user', lazy=True), foreign_keys='Ticket.assigned_id')
 
@@ -44,6 +44,7 @@ class Ticket(db.Model):
     created_date = db.Column(db.DateTime(timezone=True), default=func.now())
     overview = db.Column(db.String(200))
     special_requirements = db.Column(db.String(200))
+    initial_review_task = db.Column(db.String(200))
 
     requested_priority = db.Column(db.Integer, db.ForeignKey('priority.id'))
     assigned_priority = db.Column(db.Integer, db.ForeignKey('priority.id'))

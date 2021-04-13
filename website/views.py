@@ -59,7 +59,7 @@ def view_all_tickets():
     
     #Split tickets page on developers/users
     cur_user = User.query.filter_by(id=current_user.id).first()
-    if cur_user.user_type == 1: # or cur_user.admin == 1:
+    if cur_user.user_type == 1 or cur_user.admin == 1:
         tickets = Ticket.query.all()
         return render_template('tickets.html', tickets=tickets)
     else:
@@ -144,6 +144,12 @@ def update_ticket():
             ticket.special_requirements = special_requirements
             # return 'spec_req ' + str(special_requirements)
         
+        initial_review_text = request.form.get('task_review')
+        # update ticket special_requirements
+        if ticket.inital_review != initial_review_text:
+            ticket.inital_review = initial_review_text
+            # return 'spec_req ' + str(special_requirements)
+        
 
         updated_status = int(request.form.get('update_status'))
         # update ticket status
@@ -199,7 +205,7 @@ def view_all_users():
 
     #Split users page on admin/ everyone else
     cur_user = User.query.filter_by(id=current_user.id).first()
-    if cur_user.user_type_fk.id == 1: # cur_user.admin == 1:
+    if cur_user.admin == 1:
         users = User.query.all()
         return render_template('users.html', users=users)
     else:
@@ -214,7 +220,7 @@ def view_single_user(user_id):
     if user == None:
         flash('User Doesn\'t Exist', category='error')
         return redirect(url_for('views.dashboard'))
-    elif current_user.user_type_fk.id != 1 and current_user.id != user.id: # current_user.admin != 1 and current_user.id != user.id:
+    elif current_user.admin != 1 and current_user.id != user.id:
         flash('You don\'t have access', category='error')
         return redirect(url_for('views.dashboard'))
     else:

@@ -56,7 +56,7 @@ def sign_up():
         elif validate_password_requirements(password1,password2):
             flash('Password must be at least 7 characters.', category='error')
         else:
-            new_user = User(email=email, first_name=first_name, last_name=last_name, password=generate_password_hash(password1, method='sha256'), user_type = 2) #, admin = 0)
+            new_user = User(email=email, first_name=first_name, last_name=last_name, password=generate_password_hash(password1, method='sha256'), user_type = 2, admin = 0)
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
@@ -90,46 +90,55 @@ def sign_up():
 def update_user():
 
     user_id = int(request.form.get('user_id'))
-    # if current_user.admin == 1 or current_user.id == user_id:
-    if request.method == 'POST':
+    if current_user.admin == 1 or current_user.id == user_id:
+        if request.method == 'POST':
 
-        # Get user entitiy
-        user = User.query.filter_by(id=user_id).first()
+            # Get user entitiy
+            user = User.query.filter_by(id=user_id).first()
 
-                
-        first_name = request.form.get('first_name')
-        # update user first_name
-        if user.first_name != first_name:
-            user.first_name = first_name
-        
-        last_name = request.form.get('last_name')
-        # update user last_name
-        if user.last_name != last_name:
-            user.last_name = last_name
+                    
+            first_name = request.form.get('first_name')
+            # update user first_name
+            if user.first_name != first_name:
+                user.first_name = first_name
+            
+            last_name = request.form.get('last_name')
+            # update user last_name
+            if user.last_name != last_name:
+                user.last_name = last_name
 
 
-        password1 = request.form.get('password1')
-        password2 = request.form.get('password2')
-        # update user password
-        if password1 == '' or check_password_hash(user.password, password1):
-            pass
-        elif validate_password_requirements(password1, password2):
-            return redirect(url_for('views.view_single_user', user_id = user_id))
-        else:
-            user.password = generate_password_hash(password1, method='sha256')
-        
-        user_type = int(request.form.get('user_type'))
-        # update user user_type
-        if user.user_type != user_type:
-            user.user_type = user_type
-                
-        # Commit Updates
-        db.session.commit() 
+            password1 = request.form.get('password1')
+            password2 = request.form.get('password2')
+            # update user password
+            if password1 == '' or check_password_hash(user.password, password1):
+                pass
+            elif validate_password_requirements(password1, password2):
+                return redirect(url_for('views.view_single_user', user_id = user_id))
+            else:
+                user.password = generate_password_hash(password1, method='sha256')
+            
+            user_type = int(request.form.get('user_type'))
+            # update user user_type
+            if user.user_type != user_type:
+                user.user_type = user_type
 
-        return redirect(url_for('views.view_all_users'))
-        # else:
-        #   flash('You are not eligible to make these changes', category='error')
-        #   return redirect(url_for('views.view_all_users'))
+            admin_level = int(request.form.get('admin_level'))
+            # update user admin level
+            if user.admin != admin_level:
+                user.admin = admin_level
+                    
+            # Commit Updates
+            db.session.commit() 
+
+            # return to all users
+            return redirect(url_for('views.view_all_users'))
+
+
+    # flash ineligble to make changes and return to dashboard
+    else:
+        flash('You are not eligible to make these changes', category='error')
+        return redirect(url_for('views.dashboard'))
 
 def validate_password_requirements(pass1,pass2):
     if pass1 != '':

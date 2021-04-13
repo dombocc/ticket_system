@@ -175,7 +175,7 @@
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Ticket - {{ ticket.id }}</h1>
                     </div>
-
+                    {% if current_user.user_type == 1 or current_user.admin == 1 %}
                     <form method="POST" action="update_ticket">
 
                     <!-- Content Row -->
@@ -234,6 +234,14 @@
                                             <option value="{{ developer.id }}">{{ developer.first_name }} {{ developer.last_name }}</option>
                                         {% endfor %}
                                     </select>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class='row'>
+                                <div class='col-sm-1'>Task Review:</div> 
+                                <div class='col-sm-10'>
+                                    <textarea class='form-control' type="task_review" name="task_review" id="task_review" row='3' value=""></textarea>
+                                </div>
                             </div>
                         </li>
                         <li class="list-group-item">
@@ -309,6 +317,132 @@
 
                     </div>
                     </form>
+
+                    {% else %}
+
+                    <!-- Content Row -->
+                    <div class="row">
+                        <li class="list-group-item">
+                            <div class='row'>
+                                <div class='col-sm-1'>ID:</div> 
+                                <div class='col-sm-1'>
+                                    <input readonly class='form-control' type="ticket_id" name="ticket_id" id="ticket_id" value='{{ ticket.id }}'></input>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class='row'>
+                                <div class='col-sm-1'>Title:</div> 
+                                <div class='col-sm-5'>
+                                    <input readonly class='form-control' type="ticket_title" name="ticket_title" id="ticket_title" value="{{ ticket.title }}"></input>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class='row'>
+                                <div class='col-sm-1'>Overview:</div> 
+                                <div class='col-lg-10'>
+                                    <textarea readonly class='form-control' type="ticket_overview" name="ticket_overview" id="ticket_overview" rows='2'>{{ ticket.overview }}</textarea>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class='row'>
+                                <div class='col-sm-1'>Special Requirements:</div> 
+                                <div class='col-lg-10'>
+                                    <textarea readonly class='form-control' type="special_requirements" name="special_requirements" id="special_requirements" rows='2'>{{ ticket.special_requirements }}</textarea>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class='row'>
+                                <div class='col-sm-1'>Owner:</div> 
+                                <div class='col-sm-2'>
+                                    <input readonly class='form-control' type="owner_name" name="owner_name" id="owner_name" value="{{ ticket.owner_user.first_name }} {{ ticket.owner_user.last_name }}"></input>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class='row'>
+                                <div class='col-sm-1'>Assigned Developer:</div> 
+                                <div class='col-sm-2'>
+                                    <select class="custom-select mr-sm-1" name='assigned_user' id="assigned_user">
+                                        {% if ticket.assigned_user != None %}
+                                            <option value="{{ ticket.assigned_user.id }}">{{ ticket.assigned_user.first_name }} {{ ticket.assigned_user.last_name }}</option>
+                                            {% else %}
+                                            <option value="">Developer Not Assigned</option>
+                                        {% endif %}
+                                        
+                                    </select>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class='row'>
+                                <div class='col-sm-1'>Task Review:</div> 
+                                <div class='col-sm-10'>
+                                    <textarea readonly class='form-control' type="task_review" name="task_review" id="task_review" row='3' value=""></textarea>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class='row'>
+                                <div class='col-sm-1'>Current Status:</div> 
+                                <div class='col-lg-3'>{{ ticket_status[0][0] }}</div>
+                                <div class='col-sm-1'>Last Updated:</div> 
+                                <div class='col-lg-3'>{{ ticket_status[0][1] }}</div>
+                            </div>
+                        </li>
+                        {% if (count_status-1) != 0 %}
+                        <li class="list-group-item">
+                            <div class='row'><div class='col-lg-4'>Previous Statuses:</div></div>
+                            {% for i in range(count_status-1) %}
+                            <div class='row'>
+                                <div class='col-sm-1'>Status:</div> 
+                                <div class='col-lg-4'>{{ ticket_status[i+1][0] }}</div>
+                                <div class='col-sm-1'>Updated:</div> 
+                                <div class='col-lg-4'>{{ ticket_status[i+1][1] }}</div>
+                            </div>
+                            {% endfor %}
+                        </li>
+                        {% endif %}
+                        <li class="list-group-item">
+                            <div class='row'>
+                                <div class='col-sm-1'>Requested Priority:</div> 
+                                <div class='col-sm-1'>
+                                    <input readonly class='form-control' type="requested_priority" name="requested_priority" id="requested_priority" value='{{ ticket.requested_pri.priority_decoded }}'></input>
+                                </div>
+                            
+                                <div class='col-sm-2'>Assigned Priority:</div> 
+                                <div class='col-sm-3'>
+                                    <select class="custom-select mr-sm-1" name='assigned_priority' id="assigned_priority">
+                                        {% if ticket.assigned_pri != None %}
+                                            <option value="{{ ticket.assigned_pri.id }}">{{ ticket.assigned_pri.priority_decoded }}</option>
+                                            {% else %}
+                                            <option value="">Priority Not Assigned</option>
+                                        {% endif %}
+                                    </select>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <li class="list-group-item">
+                            <div class='row'>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class='row'>
+                                <div class='col-sm'>
+                                    <a type="submit" class="btn btn-info" href='/tickets'>
+                                        <span aria-hidden="true">Exit</span>
+                                    </a> 
+                                </div>
+                            </div>
+                        </li>
+
+
+                    </div>
+                    
+                    {% endif %}
 
                     <!-- Content Row -->
                     <div class="row">
