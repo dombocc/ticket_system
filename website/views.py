@@ -149,6 +149,10 @@ def update_ticket():
         # update ticket status
         if ticket.ticket_statuses.all()[-1].id != updated_status:
             new_status = Ticket_Status.query.filter_by(id=updated_status).first()
+            for status in ticket.ticket_statuses.all():
+                if status.id >= new_status.id:
+                    status = Ticket_Status.query.filter_by(id=status.id).first()
+                    ticket.ticket_statuses.remove(status)
             ticket.ticket_statuses.append(new_status)
             # return 'status ' + str(new_status.id) + str(ticket.ticket_statuses.all()[-1].id)
         
