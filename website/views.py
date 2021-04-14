@@ -67,22 +67,65 @@ def view_all_tickets():
         all_users = User.query.all()
         output_tickets = []
 
+        # Initialize bool for 'select all's
+        filter_ticket_id_all_bool = False
+        filter_ticket_status_all_bool = False
+        filter_ticket_owner_all_bool = False
+        filter_ticket_developer_all_bool = False
+
         if cur_user.user_type == 1 or cur_user.admin == 1:
             all_tickets = Ticket.query.filter_by().all()
-
-            for ticket in all_tickets:
-                if ticket.id in filter_ticket_id:
-                    all_tickets.pop(ticket)
-            
-            # add filter capabilities
-            # for ticket in tickets:
-            #     if ticket.id == 1:
-            #         output.append(ticket)
-            return render_template('tickets.html', tickets=all_tickets, all_tickets = all_tickets, all_ticket_statuses=all_ticket_statuses, all_users=all_users)
         else:
             all_tickets = Ticket.query.filter_by(owner_id=cur_user.id).all()
-            return render_template('tickets.html', tickets=all_tickets ,all_tickets = all_tickets, all_ticket_statuses=all_ticket_statuses, all_users=all_users)
-        # return str(filter_ticket_id) + ' ' + str(filter_ticket_status) + ' ' + str(filter_ticket_owner) + ' ' + str(filter_ticket_developer)
+        
+        unfiltered_tickets = all_tickets
+
+        # add filter capabilities
+        # filter by ticket id
+        if len(filter_ticket_id) == 1 and filter_ticket_id[0] == "":
+            filter_ticket_id_all_bool = True
+        else:
+            for ticket in unfiltered_tickets:
+                if str(ticket.id) in filter_ticket_id:
+                    output_tickets.append(ticket)
+            unfiltered_tickets = output_tickets
+        
+        #filter by ticket status
+        if len(filter_ticket_status) == 1 and filter_ticket_status[0] == "":
+            filter_ticket_status_all_bool = True
+        else:
+            for ticket in unfiltered_tickets:
+                if str(ticket.ticket_statuses[-1].id) in filter_ticket_status:
+                    output_tickets.append(ticket)
+            unfiltered_tickets = output_tickets
+            
+        # filter by owner
+        if len(filter_ticket_owner) == 1 and filter_ticket_owner[0] == "":
+            filter_ticket_owner_all_bool = True
+        else:
+            for ticket in unfiltered_tickets:
+                if str(ticket.owner_id) in filter_ticket_owner:
+                    output_tickets.append(ticket)
+            unfiltered_tickets = output_tickets
+         
+        # filter by developer  
+        if len(filter_ticket_developer) == 1 and filter_ticket_developer[0] == "":
+            filter_ticket_developer_all_bool = True
+        else:
+            for ticket in unfiltered_tickets:
+                if str(ticket.assigned_id) in filter_ticket_developer:
+                    output_tickets.append(ticket)
+        
+        if len(output_tickets) == 0:
+            if filter_ticket_id_all_bool and filter_ticket_status_all_bool and filter_ticket_owner_all_bool and filter_ticket_developer_all_bool:
+                pass
+            else:
+                flash('No Tickets Exist With These Filters, Returning All', category='error')
+
+            output_tickets = all_tickets
+
+            
+        return render_template('tickets.html', tickets=output_tickets, all_tickets=all_tickets, all_ticket_statuses=all_ticket_statuses, all_users=all_users)
 
     
     #Split tickets page on developers/users
@@ -179,8 +222,8 @@ def update_ticket():
         
         initial_review_text = request.form.get('task_review')
         # update ticket special_requirements
-        if ticket.inital_review != initial_review_text:
-            ticket.inital_review = initial_review_text
+        if ticket.initial_review_task != initial_review_text:
+            ticket.initial_review_task = initial_review_text
             # return 'spec_req ' + str(special_requirements)
         
 
