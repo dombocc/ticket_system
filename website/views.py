@@ -65,7 +65,6 @@ def view_all_tickets():
         cur_user = User.query.filter_by(id=current_user.id).first()
         all_ticket_statuses = Ticket_Status.query.all()
         all_users = User.query.all()
-        output_tickets = []
 
         # Initialize bool for 'select all's
         filter_ticket_id_all_bool = False
@@ -78,51 +77,61 @@ def view_all_tickets():
         else:
             all_tickets = Ticket.query.filter_by(owner_id=cur_user.id).all()
         
-        unfiltered_tickets = all_tickets
 
         # add filter capabilities
         # filter by ticket id
+        # filter_1
+        filter_1 = []
         if len(filter_ticket_id) == 1 and filter_ticket_id[0] == "":
             filter_ticket_id_all_bool = True
+            filter_1 = all_tickets
         else:
-            for ticket in unfiltered_tickets:
+            for ticket in all_tickets:
                 if str(ticket.id) in filter_ticket_id:
-                    output_tickets.append(ticket)
-            unfiltered_tickets = output_tickets
+                    filter_1.append(ticket)
         
-        #filter by ticket status
+        # filter by ticket status
+        # filter_2
+        filter_2 = []
         if len(filter_ticket_status) == 1 and filter_ticket_status[0] == "":
             filter_ticket_status_all_bool = True
+            filter_2 = filter_1
         else:
-            for ticket in unfiltered_tickets:
+            for ticket in filter_1:
                 if str(ticket.ticket_statuses[-1].id) in filter_ticket_status:
-                    output_tickets.append(ticket)
-            unfiltered_tickets = output_tickets
-            
+                    filter_2.append(ticket)
+    
         # filter by owner
+        # filter 3
+        filter_3 = []
         if len(filter_ticket_owner) == 1 and filter_ticket_owner[0] == "":
             filter_ticket_owner_all_bool = True
+            filter_3 = filter_2
         else:
-            for ticket in unfiltered_tickets:
+            for ticket in filter_2:
                 if str(ticket.owner_id) in filter_ticket_owner:
-                    output_tickets.append(ticket)
-            unfiltered_tickets = output_tickets
-         
+                    filter_3.append(ticket)
+
         # filter by developer  
+        # filter 4
+        filter_4 = []
         if len(filter_ticket_developer) == 1 and filter_ticket_developer[0] == "":
             filter_ticket_developer_all_bool = True
+            filter_4 = filter_3
         else:
-            for ticket in unfiltered_tickets:
+            for ticket in filter_3:
                 if str(ticket.assigned_id) in filter_ticket_developer:
-                    output_tickets.append(ticket)
+                    filter_4.append(ticket)
         
-        if len(output_tickets) == 0:
+        if len(filter_4) == 0:
             if filter_ticket_id_all_bool and filter_ticket_status_all_bool and filter_ticket_owner_all_bool and filter_ticket_developer_all_bool:
                 pass
             else:
                 flash('No Tickets Exist With These Filters, Returning All', category='error')
 
             output_tickets = all_tickets
+        else:
+            output_tickets = filter_4
 
             
         return render_template('tickets.html', tickets=output_tickets, all_tickets=all_tickets, all_ticket_statuses=all_ticket_statuses, all_users=all_users)
