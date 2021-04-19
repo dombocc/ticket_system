@@ -15,12 +15,16 @@ def front_page():
 @views.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('dashboard.html')
 
-# @views.route('/new_ticket')
-# @login_required
-# def new_ticket():
-#     return render_template('new_ticket.html')
+    tickets = Ticket.query.all()
+    
+    ticket_statuses_dict = {status.name:0 for status in Ticket_Status.query.all()}
+    for ticket in tickets:
+        ticket_statuses_dict[ticket.ticket_statuses[-1].name] += 1
+    
+    # return str(ticket_statuses_dict)
+
+    return render_template('dashboard.html')
 
 
 @views.route('/new_ticket', methods=['GET', 'POST'])
@@ -183,7 +187,7 @@ def view_single_ticket(ticket_id):
     # Get status list in order from oldest to newest
     ticket_status = []
     for i in range(len(statuses)):
-        ticket_status.append([  status_dict[statuses[i][1]]  , statuses[i][2]])
+        ticket_status.append([ status_dict[statuses[i][1]]  , statuses[i][2] ])
     
     # Get List of developers
     developers = User.query.filter_by(user_type=1).order_by(User.id).all()
