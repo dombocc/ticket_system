@@ -17,7 +17,7 @@
                 <div class="d-grid gap-2 d-md-block">
                     <a class="btn btn-outline-success" type="submit" href="/admin-user-{{current_user.id }}">Home</a>
                     <a class="btn btn-outline-success" type="submit" href="/sign_up">sign_up</a>
-                    {% if current_user.user_type == 1 %}
+                    {% if current_user.admin == 1 %}
                     <a class="btn btn-outline-success" type="submit" href="/admin-users">Users</a>
                     {% endif %}
                     <a class="btn btn-outline-success" type="submit" href="/dashboard">Dashboard</a>
