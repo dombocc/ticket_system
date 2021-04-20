@@ -16,14 +16,6 @@ def front_page():
 @login_required
 def dashboard():
 
-    tickets = Ticket.query.all()
-    
-    ticket_statuses_dict = {status.name:0 for status in Ticket_Status.query.all()}
-    for ticket in tickets:
-        ticket_statuses_dict[ticket.ticket_statuses[-1].name] += 1
-    
-    # return str(ticket_statuses_dict)
-
     return render_template('dashboard.html')
 
 
