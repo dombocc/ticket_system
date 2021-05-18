@@ -1,6 +1,7 @@
 # ticket_system
-ticketing system
-This is a generic and customizable help desk style ticketing system that can be used to track any sort of ticket task or project development. 
+Ticketing System
+
+This is a generic style and completely customizable help desk style ticketing system that can be used to track any sort of ticket task or project development. 
 This was made using python and flask as well as bootstrap for some html design upgrades. 
 
 Uses SQLite for backend database storage. 
