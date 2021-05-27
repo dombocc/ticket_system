@@ -8,9 +8,9 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-    #if user currently logged in, go to dashboard
+    #if user currently logged in, go to view_all_tickets
     if current_user.get_id():
-        return redirect(url_for('views.dashboard'))
+        return redirect(url_for('views.view_all_tickets'))
 
     if request.method == 'POST':
         email = request.form.get('email')
@@ -21,7 +21,7 @@ def login():
             if check_password_hash(user.password, password):
                 flash('Logged in successfully!', category='success')
                 login_user(user, remember=True)
-                return redirect(url_for('views.dashboard'))
+                return redirect(url_for('views.view_all_tickets'))
             else:
                 flash('Incorrect password, try again.', category='error')
         else:

@@ -9,7 +9,7 @@ views = Blueprint('views', __name__)
 @views.route('/')
 def front_page():
     if current_user.get_id():
-        return redirect(url_for('views.dashboard'))
+        return redirect(url_for('views.view_all_tickets'))
     return render_template('front_page.html')
 
 @views.route('/dashboard')
@@ -43,7 +43,7 @@ def create_new_ticket():
 
         # return str(new_ticket.title) + ' ' + str(new_ticket.overview) + ' ' + str(new_ticket.spec_requirements) + ' ' + str(new_ticket.req_priority) + ' ' + str(new_ticket.owner_id) + ' ' + str(user_id) + ' ' + str(status.id)
         # return str(status)
-        return redirect(url_for('views.dashboard'))
+        return redirect(url_for('views.view_all_tickets'))
 
     # If 'GET' request
     return render_template('new_ticket.html')
